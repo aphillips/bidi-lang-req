@@ -86,7 +86,7 @@ ins {
 	background-color: #FF6;
 }
 
-.cjk-demo {
+p.cjk-demo {
 	font-size: 200%; 
 	text-align: center;
 	font-family: serif;
@@ -186,6 +186,56 @@ designers to provide the metadata on their own initiative. When
 standardized formats do not address the resulting issues, the result 
 can be that, while the data arrives intact, its processing or 
 presentation cannot be wholly recovered.</p>
+
+<p>Suppose that you are building a Web page to show a 
+customer's library of e-books. The e-books exist in a catalog of data 
+and consist of the usual data values. A JSON file for a single entry 
+might look something like:</p>
+
+<pre>
+{
+    "id": "978-0-1234-5678-X",
+    "title": "Moby Dick",
+    "authors": [ "Herman Melville" ],
+    "language": "en-US",
+    "pubDate": "1851-10-18",
+    "publisher": "Mark Twain Press",
+    "coverImage": "https://example.com/images/mobidick_cover.jpg",
+    // etc.
+},
+</pre>
+
+<p>Each of the above is a data field in a database somewhere. There is 
+even language information about the contents of the book 
+(<kbd>"language": "en-US"</kbd>).</p>
+
+<p>A well-internationalized catalog would include additional metadata 
+to what is shown above, though. For each of the fields containing 
+natural language text, such as the <kbd>title</kbd> and 
+<kbd>authors</kbd> fields, there will be a language attribute and base 
+direction stored as metadata. (There may be other values as well, such 
+as pronunciation metadata for sorting East Asian language information.) 
+These data fields are used in a variety of ways to influence and enable 
+the processing and display of the items. But the data structure 
+provides no place to store these.</p>
+
+<p>One work-around might be to encode the values using a mix of HTML 
+and Unicode bidi controls, so that the data value looks like this:</p>
+
+<pre>
+   "title": "&lt;span lang='en-US' dir='ltr'&gt;&amp;lrm;Mobi Dick&lt;/span&gt;"
+</pre>
+
+<p>But JSON is a data interchange format. The content may not end up 
+displaying the title field in an HTML context. The JSON might very well 
+be used to populate, say, a local data store which uses native controls 
+to show the title. And both the producer and consumer of the data don't 
+currently expect to introspect the data. They want to generate it 
+directly from a local data store, such as a database, or push it 
+directly into processing. They may have other considerations, such as 
+field length, that are affected by the inseration of additional 
+controls or markup.</p> 
+
 </section>
 
 <section id="Isn't Unicode Enough?">
@@ -344,12 +394,14 @@ characters&nbsp;&#xA0;.</p> </footer>
 
 
 <section id="Bidi">
-<section id="litmus">
-  <h2>Litmus tests</h2> <p>If your specification or application 
-  provides a way of correctly displaying the following strings when 
-  they reach the point of display to the user, you will have solved the 
-  majority of the problems. For that to happen, there must be a way to 
-  tell  the required base direction for each string.</p>
+<section id="Bidirectional Use Cases">
+  <h2>Bidirectional Use Cases</h2> 
+  
+  <p>If your specification or application provides a way of correctly 
+  displaying the following strings when they reach the point of display 
+  to the user, you will have solved the majority of the problems. For 
+  that to happen, there must be a way to tell  the required base 
+  direction for each string.</p>
   
   <p>All examples show characters from left to right in the order they 
   are stored in memory. We use Hebrew text so as to avoid issues 
